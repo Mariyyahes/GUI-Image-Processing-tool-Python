@@ -1,0 +1,295 @@
+<html>
+<head>
+<title>main.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+.s5 { color: #7a7e85;}
+.s6 { color: #5f826b; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">datetime</span>
+<span class="s0">import </span><span class="s1">os</span>
+<span class="s0">import </span><span class="s1">sys</span>
+<span class="s0">import </span><span class="s1">cv2</span>
+<span class="s0">import </span><span class="s1">imutils</span>
+<span class="s0">from </span><span class="s1">PyQt5</span><span class="s2">.</span><span class="s1">QtWidgets </span><span class="s0">import </span><span class="s1">QMainWindow</span><span class="s2">, </span><span class="s1">QAction </span><span class="s2">,</span><span class="s1">QApplication</span><span class="s2">, </span><span class="s1">QLabel</span><span class="s2">, </span><span class="s1">QPushButton</span><span class="s2">, </span><span class="s1">QVBoxLayout</span><span class="s2">, </span><span class="s1">QWidget</span><span class="s2">,</span><span class="s1">QFileDialog</span><span class="s2">, </span><span class="s1">QGridLayout</span><span class="s2">,</span><span class="s1">QMessageBox</span>
+<span class="s0">from </span><span class="s1">PyQt5</span><span class="s2">.</span><span class="s1">QtGui </span><span class="s0">import </span><span class="s1">QImage</span><span class="s2">, </span><span class="s1">QIcon</span><span class="s2">,</span><span class="s1">QPixmap</span><span class="s2">,</span><span class="s1">QCursor</span>
+<span class="s0">from </span><span class="s1">PyQt5</span><span class="s2">.</span><span class="s1">uic</span><span class="s2">.</span><span class="s1">properties </span><span class="s0">import </span><span class="s1">QtCore</span>
+<span class="s0">from </span><span class="s1">PyQt5</span><span class="s2">.</span><span class="s1">QtCore </span><span class="s0">import </span><span class="s1">QSize</span><span class="s2">, </span><span class="s1">Qt</span>
+<span class="s0">from </span><span class="s1">PyQt5 </span><span class="s0">import </span><span class="s1">QtGui</span><span class="s2">, </span><span class="s1">QtCore</span>
+
+
+
+<span class="s0">class </span><span class="s1">MainWindow</span><span class="s2">(</span><span class="s1">QMainWindow</span><span class="s2">):</span>
+    <span class="s0">def </span><span class="s1">__init__</span><span class="s2">(</span><span class="s1">self</span><span class="s2">):</span>
+        <span class="s1">super</span><span class="s2">().</span><span class="s1">__init__</span><span class="s2">()</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">setWindowTitle</span><span class="s2">(</span><span class="s3">&quot;Image Processing Tool&quot;</span><span class="s2">)</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">setWindowIcon</span><span class="s2">(</span><span class="s1">QIcon</span><span class="s2">(</span><span class="s3">r&quot;C:\Users\marey\OneDrive\سطح المكتب\logo .w.png&quot;</span><span class="s2">))</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">resize</span><span class="s2">(</span><span class="s4">1400</span><span class="s2">, </span><span class="s4">700</span><span class="s2">)</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">move</span><span class="s2">(</span><span class="s4">100</span><span class="s2">, </span><span class="s4">100</span><span class="s2">)</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">setStyleSheet</span><span class="s2">(</span><span class="s3">&quot;background: #F9F4ED;&quot;</span><span class="s2">)</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">fram</span><span class="s2">()</span>
+
+    <span class="s0">def </span><span class="s1">fram</span><span class="s2">(</span><span class="s1">self</span><span class="s2">):</span>
+        <span class="s5"># Function to upload an image</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">loadImage</span><span class="s2">()</span>
+
+        <span class="s5"># Create a QWidget for the main window</span>
+        <span class="s1">widget </span><span class="s2">= </span><span class="s1">QWidget</span><span class="s2">()</span>
+
+        <span class="s5"># Create a QVBoxLayout to hold the buttons</span>
+        <span class="s1">buttonLayout </span><span class="s2">= </span><span class="s1">QVBoxLayout</span><span class="s2">()</span>
+
+        <span class="s5"># Set the main widget of the QMainWindow to be the QWidget</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">setCentralWidget</span><span class="s2">(</span><span class="s1">widget</span><span class="s2">)</span>
+
+        <span class="s5"># Create a QLabel to show the &quot;Choose Effect&quot; text</span>
+        <span class="s1">label0 </span><span class="s2">= </span><span class="s1">QLabel</span><span class="s2">()</span>
+        <span class="s1">label1 </span><span class="s2">= </span><span class="s1">QLabel</span><span class="s2">(</span><span class="s3">'Welcome to our Image Processing App ! '</span><span class="s2">)</span>
+        <span class="s1">label2 </span><span class="s2">= </span><span class="s1">QLabel</span><span class="s2">(</span><span class="s3">'1- Upload an Image       2- Choose an Effect'</span><span class="s2">)</span>
+        <span class="s1">label1</span><span class="s2">.</span><span class="s1">setStyleSheet</span><span class="s2">(</span><span class="s3">'color: black;font-family: Century Gothic; font-size: 23px; font-weight: bold;'</span><span class="s2">)</span>
+        <span class="s1">label2</span><span class="s2">.</span><span class="s1">setStyleSheet</span><span class="s2">(</span><span class="s3">'color: black;font-family: Century Gothic; font-size: 18px; font-weight: Regular;'</span><span class="s2">)</span>
+
+        <span class="s3">''' create identical buttons with custom left &amp; right margins 
+        This code will display logo  
+        # Create a QLabel to display the photo 
+        self.photo_label = QLabel(self) 
+        # Set the size of the QLabel 
+        self.photo_label.setFixedSize(200, 40) 
+        # Load the photo from a file using QPixmap 
+        photo_pixmap = QPixmap(r&quot; &quot;) 
+        # Scale the photo to fit within the QLabel while maintaining aspect ratio 
+        scaled_pixmap = photo_pixmap.scaled(self.photo_label.size(), Qt.KeepAspectRatio) 
+        # Set the scaled photo as the pixmap of the QLabel 
+        self.photo_label.setPixmap(scaled_pixmap) '''</span>
+
+        <span class="s5"># Create the buttons</span>
+        <span class="s1">button1 </span><span class="s2">= </span><span class="s1">self</span><span class="s2">.</span><span class="s1">create_buttons</span><span class="s2">(</span><span class="s3">&quot;Grayscale image&quot;</span><span class="s2">, </span><span class="s4">5</span><span class="s2">, </span><span class="s4">5</span><span class="s2">)</span>
+        <span class="s1">button2 </span><span class="s2">= </span><span class="s1">self</span><span class="s2">.</span><span class="s1">create_buttons</span><span class="s2">(</span><span class="s3">&quot;HSL image&quot;</span><span class="s2">, </span><span class="s4">5</span><span class="s2">, </span><span class="s4">5</span><span class="s2">)</span>
+        <span class="s1">button3 </span><span class="s2">= </span><span class="s1">self</span><span class="s2">.</span><span class="s1">create_buttons</span><span class="s2">(</span><span class="s3">&quot;Rotate image&quot;</span><span class="s2">, </span><span class="s4">5</span><span class="s2">, </span><span class="s4">5</span><span class="s2">)</span>
+        <span class="s1">button4 </span><span class="s2">= </span><span class="s1">self</span><span class="s2">.</span><span class="s1">create_buttons</span><span class="s2">(</span><span class="s3">&quot;Blur Image&quot;</span><span class="s2">, </span><span class="s4">5</span><span class="s2">, </span><span class="s4">5</span><span class="s2">)</span>
+        <span class="s1">button5 </span><span class="s2">= </span><span class="s1">self</span><span class="s2">.</span><span class="s1">create_buttons</span><span class="s2">(</span><span class="s3">&quot;Edge Detection&quot;</span><span class="s2">, </span><span class="s4">5</span><span class="s2">, </span><span class="s4">5</span><span class="s2">)</span>
+        <span class="s1">download_b </span><span class="s2">= </span><span class="s1">self</span><span class="s2">.</span><span class="s1">create_download_button</span><span class="s2">(</span><span class="s4">5</span><span class="s2">, </span><span class="s4">5</span><span class="s2">)</span>
+
+        <span class="s5"># Connect the buttons to their corresponding actions</span>
+        <span class="s1">button1</span><span class="s2">.</span><span class="s1">clicked</span><span class="s2">.</span><span class="s1">connect</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">button1_Action</span><span class="s2">)</span>
+        <span class="s1">button2</span><span class="s2">.</span><span class="s1">clicked</span><span class="s2">.</span><span class="s1">connect</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">button2_Action</span><span class="s2">)</span>
+        <span class="s1">button3</span><span class="s2">.</span><span class="s1">clicked</span><span class="s2">.</span><span class="s1">connect</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">button3_Action</span><span class="s2">)</span>
+        <span class="s1">button4</span><span class="s2">.</span><span class="s1">clicked</span><span class="s2">.</span><span class="s1">connect</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">button4_Action</span><span class="s2">)</span>
+        <span class="s1">button5</span><span class="s2">.</span><span class="s1">clicked</span><span class="s2">.</span><span class="s1">connect</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">button5_Action</span><span class="s2">)</span>
+        <span class="s1">download_b</span><span class="s2">.</span><span class="s1">clicked</span><span class="s2">.</span><span class="s1">connect</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">download_bAction</span><span class="s2">)</span>
+
+        <span class="s5"># Add the labels to the QVBoxLayout</span>
+        <span class="s1">buttonLayout</span><span class="s2">.</span><span class="s1">addWidget</span><span class="s2">(</span><span class="s1">label0</span><span class="s2">)</span>
+        <span class="s1">buttonLayout</span><span class="s2">.</span><span class="s1">addWidget</span><span class="s2">(</span><span class="s1">label1</span><span class="s2">)</span>
+        <span class="s1">buttonLayout</span><span class="s2">.</span><span class="s1">addWidget</span><span class="s2">(</span><span class="s1">label2</span><span class="s2">)</span>
+
+        <span class="s5"># Add the buttons to the QVBoxLayout</span>
+        <span class="s1">buttonLayout</span><span class="s2">.</span><span class="s1">addWidget</span><span class="s2">(</span><span class="s1">button1</span><span class="s2">)</span>
+        <span class="s1">buttonLayout</span><span class="s2">.</span><span class="s1">addWidget</span><span class="s2">(</span><span class="s1">button2</span><span class="s2">)</span>
+        <span class="s1">buttonLayout</span><span class="s2">.</span><span class="s1">addWidget</span><span class="s2">(</span><span class="s1">button3</span><span class="s2">)</span>
+        <span class="s1">buttonLayout</span><span class="s2">.</span><span class="s1">addWidget</span><span class="s2">(</span><span class="s1">button4</span><span class="s2">)</span>
+        <span class="s1">buttonLayout</span><span class="s2">.</span><span class="s1">addWidget</span><span class="s2">(</span><span class="s1">button5</span><span class="s2">)</span>
+        <span class="s1">buttonLayout</span><span class="s2">.</span><span class="s1">addWidget</span><span class="s2">(</span><span class="s1">download_b</span><span class="s2">)</span>
+        <span class="s1">buttonLayout</span><span class="s2">.</span><span class="s1">setSpacing</span><span class="s2">(</span><span class="s4">20</span><span class="s2">)</span>
+        <span class="s1">buttonLayout</span><span class="s2">.</span><span class="s1">addStretch</span><span class="s2">(</span><span class="s4">3</span><span class="s2">)</span>
+
+        <span class="s5"># Create a QVBoxLayout for the image label</span>
+        <span class="s1">imageLayout </span><span class="s2">= </span><span class="s1">QVBoxLayout</span><span class="s2">()</span>
+
+        <span class="s5"># Add the label to the QVBoxLayout</span>
+        <span class="s1">imageLayout</span><span class="s2">.</span><span class="s1">addWidget</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image_label</span><span class="s2">)</span>
+
+        <span class="s5"># Create a QGridLayout to hold the buttons and image sections</span>
+        <span class="s1">grid </span><span class="s2">= </span><span class="s1">QGridLayout</span><span class="s2">()</span>
+        <span class="s1">grid</span><span class="s2">.</span><span class="s1">addLayout</span><span class="s2">(</span><span class="s1">buttonLayout</span><span class="s2">, </span><span class="s4">0</span><span class="s2">, </span><span class="s4">0</span><span class="s2">)</span>
+        <span class="s1">grid</span><span class="s2">.</span><span class="s1">addLayout</span><span class="s2">(</span><span class="s1">imageLayout</span><span class="s2">, </span><span class="s4">0</span><span class="s2">, </span><span class="s4">1</span><span class="s2">)</span>
+
+        <span class="s5"># Set the layout of the main widget to be the QGridLayout</span>
+        <span class="s1">widget</span><span class="s2">.</span><span class="s1">setLayout</span><span class="s2">(</span><span class="s1">grid</span><span class="s2">)</span>
+
+    <span class="s0">def </span><span class="s1">button1_Action</span><span class="s2">(</span><span class="s1">self</span><span class="s2">):</span>
+        <span class="s5"># Check if an image has been loaded</span>
+        <span class="s0">try</span><span class="s2">:</span>
+            <span class="s5"># Convert the image to grayscale</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">image </span><span class="s2">= </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">cvtColor</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">, </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">COLOR_BGR2GRAY</span><span class="s2">)</span>
+            <span class="s5"># Update the stored image to the grayscale image</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">setPhoto</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">)</span>
+        <span class="s0">except </span><span class="s1">Exception</span><span class="s2">:</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">error_msg</span><span class="s2">(</span><span class="s3">&quot;No image loaded !&quot;</span><span class="s2">)</span>
+
+    <span class="s0">def </span><span class="s1">button2_Action</span><span class="s2">(</span><span class="s1">self</span><span class="s2">):</span>
+        <span class="s5"># Check if an image has been loaded</span>
+        <span class="s0">try</span><span class="s2">:</span>
+            <span class="s5"># Convert the image to grayscale</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">image </span><span class="s2">= </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">cvtColor</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">, </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">COLOR_BGR2HLS</span><span class="s2">)</span>
+            <span class="s5"># Update the stored image to the grayscale image</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">setPhoto</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">)</span>
+        <span class="s0">except </span><span class="s1">Exception</span><span class="s2">:</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">error_msg</span><span class="s2">(</span><span class="s3">&quot;No image loaded ! </span><span class="s0">\n</span><span class="s3">note: this function require BGR image&quot;</span><span class="s2">)</span>
+
+    <span class="s0">def </span><span class="s1">button3_Action</span><span class="s2">(</span><span class="s1">self</span><span class="s2">):</span>
+        <span class="s0">try</span><span class="s2">:</span>
+            <span class="s1">rows</span><span class="s2">, </span><span class="s1">cols </span><span class="s2">= </span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">[:</span><span class="s4">2</span><span class="s2">]</span>
+            <span class="s1">M </span><span class="s2">= </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">getRotationMatrix2D</span><span class="s2">((</span><span class="s1">cols </span><span class="s2">/ </span><span class="s4">2</span><span class="s2">, </span><span class="s1">rows </span><span class="s2">/ </span><span class="s4">2</span><span class="s2">), </span><span class="s4">90</span><span class="s2">, </span><span class="s4">1</span><span class="s2">)</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">image </span><span class="s2">= </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">warpAffine</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">, </span><span class="s1">M</span><span class="s2">, (</span><span class="s1">cols</span><span class="s2">, </span><span class="s1">rows</span><span class="s2">))</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">setPhoto</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">)</span>
+        <span class="s0">except </span><span class="s1">Exception</span><span class="s2">:</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">error_msg</span><span class="s2">(</span><span class="s3">&quot;No image loaded !&quot;</span><span class="s2">)</span>
+
+    <span class="s0">def </span><span class="s1">button4_Action</span><span class="s2">(</span><span class="s1">self</span><span class="s2">):</span>
+        <span class="s0">try</span><span class="s2">:</span>
+            <span class="s5"># apply gaussian blur on src image</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">image </span><span class="s2">= </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">blur</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">,(</span><span class="s4">40</span><span class="s2">,</span><span class="s4">40</span><span class="s2">))</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">setPhoto</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">)</span>
+        <span class="s0">except </span><span class="s1">Exception </span><span class="s2">:</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">error_msg</span><span class="s2">(</span><span class="s3">&quot;No image loaded !&quot;</span><span class="s2">)</span>
+
+    <span class="s0">def </span><span class="s1">button5_Action</span><span class="s2">(</span><span class="s1">self</span><span class="s2">):</span>
+        <span class="s0">try</span><span class="s2">:</span>
+            <span class="s5"># Canny edge detection.</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">image </span><span class="s2">= </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">Canny</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">, </span><span class="s4">100</span><span class="s2">, </span><span class="s4">200</span><span class="s2">)</span>
+            <span class="s5"># Write image back to disk.</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">setPhoto</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">)</span>
+        <span class="s0">except </span><span class="s1">Exception </span><span class="s2">:</span>
+            <span class="s1">self</span><span class="s2">.</span><span class="s1">error_msg</span><span class="s2">(</span><span class="s3">&quot;No image loaded !&quot;</span><span class="s2">)</span>
+
+    <span class="s0">def </span><span class="s1">error_msg</span><span class="s2">(</span><span class="s1">self</span><span class="s2">,</span><span class="s1">e</span><span class="s2">):</span>
+        <span class="s5"># Show error message box</span>
+        <span class="s1">msg_box </span><span class="s2">= </span><span class="s1">QMessageBox</span><span class="s2">()</span>
+        <span class="s1">msg_box</span><span class="s2">.</span><span class="s1">setIcon</span><span class="s2">(</span><span class="s1">QMessageBox</span><span class="s2">.</span><span class="s1">Critical</span><span class="s2">)</span>
+        <span class="s1">msg_box</span><span class="s2">.</span><span class="s1">setWindowTitle</span><span class="s2">(</span><span class="s3">&quot;Error&quot;</span><span class="s2">)</span>
+        <span class="s1">msg_box</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s3">&quot;An error occurred !&quot;</span><span class="s2">)</span>
+        <span class="s1">msg_box</span><span class="s2">.</span><span class="s1">setInformativeText</span><span class="s2">(</span><span class="s3">f&quot;</span><span class="s0">{</span><span class="s1">str</span><span class="s2">(</span><span class="s1">e</span><span class="s2">)</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s1">msg_box</span><span class="s2">.</span><span class="s1">exec_</span><span class="s2">()</span>
+
+    <span class="s0">def </span><span class="s1">download_bAction</span><span class="s2">(</span><span class="s1">self</span><span class="s2">):</span>
+        <span class="s6">&quot;&quot;&quot; This function will download the image.&quot;&quot;&quot;</span>
+        <span class="s1">directory </span><span class="s2">= </span><span class="s3">r&quot;C:\Users\marey\OneDrive\سطح المكتب\EVA&quot;  </span><span class="s5"># Change the file path</span>
+        <span class="s5"># Change the current directory to specified directory</span>
+        <span class="s1">os</span><span class="s2">.</span><span class="s1">chdir</span><span class="s2">(</span><span class="s1">directory</span><span class="s2">)</span>
+        <span class="s5"># Filename with current date and time</span>
+        <span class="s1">current_time </span><span class="s2">= </span><span class="s1">datetime</span><span class="s2">.</span><span class="s1">datetime</span><span class="s2">.</span><span class="s1">now</span><span class="s2">().</span><span class="s1">strftime</span><span class="s2">(</span><span class="s3">&quot;%Y-%m-%d_%H-%M-%S&quot;</span><span class="s2">)</span>
+        <span class="s1">filename </span><span class="s2">= </span><span class="s3">f&quot;savedImage_</span><span class="s0">{</span><span class="s1">current_time</span><span class="s0">}</span><span class="s3">.jpg&quot;</span>
+        <span class="s5"># Save the edited image to the specified file</span>
+        <span class="s1">cv2</span><span class="s2">.</span><span class="s1">imwrite</span><span class="s2">(</span><span class="s1">filename</span><span class="s2">, </span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">)</span>
+
+    <span class="s0">def </span><span class="s1">create_buttons</span><span class="s2">(</span><span class="s1">self</span><span class="s2">, </span><span class="s1">name </span><span class="s2">,</span><span class="s1">l_margin</span><span class="s2">, </span><span class="s1">r_margin</span><span class="s2">):</span>
+        <span class="s6">'''create identical buttons with custom left &amp; right margins'''</span>
+        <span class="s1">button </span><span class="s2">= </span><span class="s1">QPushButton</span><span class="s2">(</span><span class="s1">name</span><span class="s2">,</span><span class="s1">self</span><span class="s2">)</span>
+        <span class="s1">button</span><span class="s2">.</span><span class="s1">setCursor</span><span class="s2">(</span><span class="s1">QCursor</span><span class="s2">(</span><span class="s1">QtCore</span><span class="s2">.</span><span class="s1">Qt</span><span class="s2">.</span><span class="s1">PointingHandCursor</span><span class="s2">))</span>
+        <span class="s1">button</span><span class="s2">.</span><span class="s1">setFixedWidth</span><span class="s2">(</span><span class="s4">270</span><span class="s2">)</span>
+        <span class="s1">button</span><span class="s2">.</span><span class="s1">setStyleSheet</span><span class="s2">(</span>
+            <span class="s5"># setting variable margins</span>
+            <span class="s3">&quot;*{margin-left: &quot; </span><span class="s2">+ </span><span class="s1">str</span><span class="s2">(</span><span class="s1">l_margin</span><span class="s2">) + </span><span class="s3">&quot;px;&quot; </span><span class="s2">+</span>
+            <span class="s3">&quot;margin-right: &quot; </span><span class="s2">+ </span><span class="s1">str</span><span class="s2">(</span><span class="s1">r_margin</span><span class="s2">) + </span><span class="s3">&quot;px;&quot; </span><span class="s2">+</span>
+            <span class="s3">''' 
+            border: 4px solid '#B4D1D0'; 
+            color: black; 
+            font-family: 'Century Gothic'; 
+            font-weight: bold; 
+            font-size: 20px; 
+            border-radius: 8px; 
+            padding: 8px 0; 
+            margin-top: 20px} 
+            *:hover{ 
+                background: '#B4D1D0' 
+            } 
+            '''</span>
+
+        <span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">button</span>
+
+    <span class="s0">def </span><span class="s1">create_download_button</span><span class="s2">(</span><span class="s1">self</span><span class="s2">, </span><span class="s1">l_margin</span><span class="s2">, </span><span class="s1">r_margin</span><span class="s2">):</span>
+        <span class="s6">'''create a circular download button with custom left &amp; right margins'''</span>
+        <span class="s1">button </span><span class="s2">= </span><span class="s1">QPushButton</span><span class="s2">(</span><span class="s3">&quot;   Download&quot;</span><span class="s2">)</span>
+        <span class="s1">button</span><span class="s2">.</span><span class="s1">setCursor</span><span class="s2">(</span><span class="s1">QCursor</span><span class="s2">(</span><span class="s1">QtCore</span><span class="s2">.</span><span class="s1">Qt</span><span class="s2">.</span><span class="s1">PointingHandCursor</span><span class="s2">))</span>
+        <span class="s1">button</span><span class="s2">.</span><span class="s1">setFixedWidth</span><span class="s2">(</span><span class="s4">270</span><span class="s2">)</span>
+        <span class="s1">button</span><span class="s2">.</span><span class="s1">setStyleSheet</span><span class="s2">(</span>
+            <span class="s5"># setting variable margins</span>
+            <span class="s3">&quot;*{margin-left: &quot; </span><span class="s2">+ </span><span class="s1">str</span><span class="s2">(</span><span class="s1">l_margin</span><span class="s2">) + </span><span class="s3">&quot;px;&quot; </span><span class="s2">+</span>
+            <span class="s3">&quot;margin-right: &quot; </span><span class="s2">+ </span><span class="s1">str</span><span class="s2">(</span><span class="s1">r_margin</span><span class="s2">) + </span><span class="s3">&quot;px;&quot; </span><span class="s2">+</span>
+            <span class="s3">''' 
+            border: 4px solid '#B4D1D0'; 
+            color: white; 
+            font-family: 'Century Gothic'; 
+            font-weight: bold; 
+            font-size: 20px; 
+            border-radius: 8px; 
+            padding: 0px 0; 
+             background-color: '#B4D1D0'; 
+            margin-top: 20px} 
+            *:hover{ 
+                background: '#B4D1D0' 
+            } 
+            '''</span>
+        <span class="s2">)</span>
+
+        <span class="s5"># create the button icon</span>
+        <span class="s1">icon </span><span class="s2">= </span><span class="s1">QIcon</span><span class="s2">()</span>
+        <span class="s1">icon</span><span class="s2">.</span><span class="s1">addPixmap</span><span class="s2">(</span><span class="s1">QPixmap</span><span class="s2">(</span><span class="s3">&quot;C:/Users/marey/Downloads/icons8-download-24.png&quot;</span><span class="s2">), </span><span class="s1">QIcon</span><span class="s2">.</span><span class="s1">Normal</span><span class="s2">, </span><span class="s1">QIcon</span><span class="s2">.</span><span class="s1">Off</span><span class="s2">)</span>
+        <span class="s1">button</span><span class="s2">.</span><span class="s1">setIcon</span><span class="s2">(</span><span class="s1">icon</span><span class="s2">)</span>
+        <span class="s1">button</span><span class="s2">.</span><span class="s1">setIconSize</span><span class="s2">(</span><span class="s1">QSize</span><span class="s2">(</span><span class="s4">40</span><span class="s2">, </span><span class="s4">40</span><span class="s2">))</span>
+
+        <span class="s0">return </span><span class="s1">button</span>
+
+    <span class="s0">def </span><span class="s1">loadImage</span><span class="s2">(</span><span class="s1">self</span><span class="s2">):</span>
+        <span class="s6">&quot;&quot;&quot; This function will load the user selected image 
+            and set it to label using the setPhoto function 
+        &quot;&quot;&quot;</span>
+        <span class="s1">menubar </span><span class="s2">= </span><span class="s1">self</span><span class="s2">.</span><span class="s1">menuBar</span><span class="s2">()</span>
+        <span class="s1">menubar</span><span class="s2">.</span><span class="s1">setStyleSheet</span><span class="s2">(</span>
+            <span class="s3">&quot;QMenuBar { background-color:#B4D1D0; color:black; font-family: Century Gothic; font-size: 18px; font-weight: bold; higt:50px;}&quot;</span><span class="s2">)</span>
+        <span class="s1">file_menu </span><span class="s2">= </span><span class="s1">menubar</span><span class="s2">.</span><span class="s1">addMenu</span><span class="s2">(</span><span class="s3">'File'</span><span class="s2">)</span>
+        <span class="s1">open_image_action </span><span class="s2">= </span><span class="s1">QAction</span><span class="s2">(</span><span class="s3">'Open Image'</span><span class="s2">, </span><span class="s1">self</span><span class="s2">)</span>
+        <span class="s1">open_image_action</span><span class="s2">.</span><span class="s1">triggered</span><span class="s2">.</span><span class="s1">connect</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">browse_image</span><span class="s2">)</span>
+        <span class="s1">file_menu</span><span class="s2">.</span><span class="s1">addAction</span><span class="s2">(</span><span class="s1">open_image_action</span><span class="s2">)</span>
+
+        <span class="s5"># Create a QLabel to display the loaded image</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">image_label </span><span class="s2">= </span><span class="s1">QLabel</span><span class="s2">(</span><span class="s1">self</span><span class="s2">)</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">image_label</span><span class="s2">.</span><span class="s1">setFixedSize</span><span class="s2">(</span><span class="s4">740</span><span class="s2">, </span><span class="s4">700</span><span class="s2">)</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">image_label</span><span class="s2">.</span><span class="s1">setAlignment</span><span class="s2">(</span><span class="s1">QtCore</span><span class="s2">.</span><span class="s1">Qt</span><span class="s2">.</span><span class="s1">AlignCenter</span><span class="s2">)</span>
+
+    <span class="s0">def </span><span class="s1">browse_image</span><span class="s2">(</span><span class="s1">self</span><span class="s2">):</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">filename</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">= </span><span class="s1">QFileDialog</span><span class="s2">.</span><span class="s1">getOpenFileName</span><span class="s2">(</span><span class="s1">self</span><span class="s2">, </span><span class="s3">'Open Image'</span><span class="s2">, </span><span class="s3">''</span><span class="s2">, </span><span class="s3">'Image files (*.*)'</span><span class="s2">)</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">image </span><span class="s2">= </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">imread</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">filename</span><span class="s2">)</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">setPhoto</span><span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s1">image</span><span class="s2">)</span>
+
+    <span class="s0">def </span><span class="s1">setPhoto</span><span class="s2">(</span><span class="s1">self</span><span class="s2">, </span><span class="s1">image</span><span class="s2">):</span>
+        <span class="s6">&quot;&quot;&quot; This function will take image input and resize it 
+            only for display purpose and convert it to QImage 
+            to set at the label. 
+        &quot;&quot;&quot;</span>
+        <span class="s5"># Resize the image to a width of 640 pixels</span>
+        <span class="s1">resized_image </span><span class="s2">= </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">resize</span><span class="s2">(</span><span class="s1">image</span><span class="s2">, (</span><span class="s4">640</span><span class="s2">, </span><span class="s1">int</span><span class="s2">(</span><span class="s1">image</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">[</span><span class="s4">0</span><span class="s2">] * (</span><span class="s4">640 </span><span class="s2">/ </span><span class="s1">image</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">[</span><span class="s4">1</span><span class="s2">]))))</span>
+
+        <span class="s5"># Convert the image to RGB format</span>
+        <span class="s1">rgb_image </span><span class="s2">= </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">cvtColor</span><span class="s2">(</span><span class="s1">resized_image</span><span class="s2">, </span><span class="s1">cv2</span><span class="s2">.</span><span class="s1">COLOR_BGR2RGB</span><span class="s2">)</span>
+
+        <span class="s5"># Create a QImage from the RGB image data</span>
+        <span class="s1">qimage </span><span class="s2">= </span><span class="s1">QImage</span><span class="s2">(</span><span class="s1">rgb_image</span><span class="s2">.</span><span class="s1">data</span><span class="s2">, </span><span class="s1">rgb_image</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">[</span><span class="s4">1</span><span class="s2">], </span><span class="s1">rgb_image</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">[</span><span class="s4">0</span><span class="s2">], </span><span class="s1">QImage</span><span class="s2">.</span><span class="s1">Format_RGB888</span><span class="s2">)</span>
+
+        <span class="s5"># Create a QPixmap from the QImage and set it as the pixmap of self.image_label</span>
+        <span class="s1">self</span><span class="s2">.</span><span class="s1">image_label</span><span class="s2">.</span><span class="s1">setPixmap</span><span class="s2">(</span><span class="s1">QtGui</span><span class="s2">.</span><span class="s1">QPixmap</span><span class="s2">.</span><span class="s1">fromImage</span><span class="s2">(</span><span class="s1">qimage</span><span class="s2">))</span>
+
+
+<span class="s0">if </span><span class="s1">__name__ </span><span class="s2">== </span><span class="s3">'__main__'</span><span class="s2">:</span>
+    <span class="s1">app </span><span class="s2">= </span><span class="s1">QApplication</span><span class="s2">(</span><span class="s1">sys</span><span class="s2">.</span><span class="s1">argv</span><span class="s2">)</span>
+    <span class="s1">window </span><span class="s2">= </span><span class="s1">MainWindow</span><span class="s2">()</span>
+    <span class="s1">window</span><span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+    <span class="s1">sys</span><span class="s2">.</span><span class="s1">exit</span><span class="s2">(</span><span class="s1">app</span><span class="s2">.</span><span class="s1">exec</span><span class="s2">())  </span><span class="s5"># terminate the app</span>
+
+</pre>
+</body>
+</html>
